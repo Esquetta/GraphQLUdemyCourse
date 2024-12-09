@@ -8,7 +8,7 @@ const Header = () => {
         href="#"
         className="font-bold text-xl text-white flex space-x-4 items-center"
       >
-        <img src={Logo} alt="Logo" className="h-10 w-10" />
+        {/* <img src={Logo} alt="Logo" className="h-10 w-10" /> */}
         <p>Notes</p>
       </a>
     </div>

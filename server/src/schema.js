@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server");
 
-const typeDef = gql`
+const typeDefs = gql`
   type Query {
     notes: [Note!]!
   }
@@ -34,6 +34,32 @@ const typeDef = gql`
     Brown
     Turquoise
   }
+
+  
 `;
 
-module.exports = typeDef;
+const mocks = {
+  Query: () => ({
+    notes: () => [...new Array(5)], // 5 adet note döndürülecek
+  }),
+  Note: () => ({
+    id: () => Math.ceil((Math.random())*100),
+    title: () => "Mock Title",
+    content: () => "This is a mock content.",
+    author: () => ({
+      id: "123",
+      name: "John Doe",
+      age: 30,
+      photo: "https://example.com/photo.jpg",
+    }),
+    NoteCardBackGroundColor: () => "Blue", // Enum'dan bir renk
+  }),
+  Author: () => ({
+    id: () => "123",
+    name: () => "John Doe",
+    age: () => 30,
+    photo: () => "https://example.com/photo.jpg",
+  }),
+};
+
+module.exports = { typeDefs, mocks };
