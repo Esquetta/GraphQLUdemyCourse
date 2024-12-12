@@ -18,6 +18,15 @@ class NoteAPI extends RESTDataSource {
   getNoteById(noteId){
     return this.get(`notes/${noteId}`)
   }
+  async addNote(title,content,color){
+    
+    this.post(`notes/add`,{
+      title:title,
+      content:content,
+      NoteCardBackGroundColor:color
+    })
+    return this.getNotes();
+  }
 }
 
 module.exports=NoteAPI;
