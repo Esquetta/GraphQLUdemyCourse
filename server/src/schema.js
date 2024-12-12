@@ -3,7 +3,18 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type Query {
     notes: [Note!]!
-    note(id:ID):Note
+    note(id: ID): Note
+  }
+  type Mutation {
+    addNote(
+      title: String!
+      content: String!
+      NoteCardBackGroundColor: Color!
+    ): [Note]
+  }
+  type RequestResponse {
+    code: Int!
+    message: String!
   }
 
   type Author {
@@ -35,32 +46,63 @@ const typeDefs = gql`
     Brown
     Turquoise
   }
-
-  
 `;
 
-const mocks = {
-  Query: () => ({
-    notes: () => [...new Array(5)], // 5 adet note döndürülecek
-  }),
-  Note: () => ({
-    id: () => Math.ceil((Math.random())*100),
-    title: () => "Mock Title",
-    content: () => "This is a mock content.",
-    author: () => ({
+let mockNotes = [
+  {
+    id: "1",
+    title: "Mock Title",
+    content: "This is mock content.",
+    NoteCardBackGroundColor: "Blue",
+    author: {
       id: "123",
       name: "John Doe",
       age: 30,
       photo: "https://example.com/photo.jpg",
-    }),
-    NoteCardBackGroundColor: () => "Blue", // Enum'dan bir renk
+    },
+  },
+  {
+    id: "2",
+    title: "Mock Title",
+    content: "This is mock content.",
+    NoteCardBackGroundColor: "Green",
+    author: {
+      id: "123",
+      name: "John Doe",
+      age: 30,
+      photo: "https://example.com/photo.jpg",
+    },
+  },
+];
+
+const mocks = {
+  Query: () => ({
+    notes: () => mockNotes, // Return mock notes
+    note: (_, { id }) => mockNotes.find((note) => note.id === id), // Find and return specific note by id
   }),
-  Author: () => ({
-    id: () => "123",
-    name: () => "John Doe",
-    age: () => 30,
-    photo: () => "https://example.com/photo.jpg",
-  }),
+
+  Mutation: {
+    addNote: (_, { title, content, NoteCardBackGroundColor }) => {
+      const newNote = {
+        id: (mockNotes.length + 1).toString(),
+        title,
+        content,
+        author: {
+          id: "123",
+          name: "John Doe",
+          age: 30,
+          photo: "https://example.com/photo.jpg",
+        },
+        NoteCardBackGroundColor,
+      };
+      mockNotes.push(newNote); // Add the new note to the mock data
+      return mockNotes; // Return updated notes list
+    },
+  },
+
+  Note: {
+    author: (note) => note.author, // Provide author details
+  },
 };
 
 module.exports = { typeDefs, mocks };
